@@ -10,7 +10,8 @@ Created by:
     Mohammed Deeb
 ***/
 
-#include "BFS_algo.h"
+#include "graph.h"
+#include "vertex.h"
 using namespace NS_BFS_ALGO;
 
 int main()
