@@ -47,8 +47,29 @@ namespace NS_BFS_ALGO {
 		//add edge between two vertices
 	}
 
-	void Graph::BFS(Graph graph, Vertex sourceVertex) {
-		//implement pseudo code from class slides
+	void Graph::BFS(int s) {
+		for (Vertex* u : vertices) {
+		u->setColor("WHITE");
+		u->setDistance(INT_MAX);
+		u->setPredecessor(nullptr);
+	    	}
+	    	vertices[s]->setColor("GRAY");
+	    	vertices[s]->setDistance(0);
+	    	std::queue<Vertex*> Q;
+	    	Q.push(vertices[s]);
+	    	while (!Q.empty()) {
+			Vertex* u = Q.front();
+			Q.pop();
+			for (Vertex* v : adj[u->getId()]) {
+		    		if (v->getColor() == "WHITE") {
+					v->setColor("GRAY");
+					v->setDistance(u->getDistance() + 1);
+					v->setPredecessor(u);
+					Q.push(v);
+		    		}
+			}
+			u->setColor("BLACK");
+	    	}
 	}
 
 	void Graph::printPath(Graph graph, Vertex sourceVertex, Vertex destinationVertex){
