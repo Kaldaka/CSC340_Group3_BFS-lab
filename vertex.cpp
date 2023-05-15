@@ -5,16 +5,19 @@
 namespace NS_BFS_ALGO {
 
 	//constructor defined
-	Vertex::Vertex() : identifier(0), color("white"), predecessor(-1) {}
+	Vertex::Vertex() : id(0), color("WHITE"), distance(INT_MAX), predecessor(nullptr) {}
+	Vertex::Vertex(int id) : id(id), color("WHITE"), distance(INT_MAX), predecessor(nullptr) {}
+
 
 	//mutators defined
-	void Vertex::setIdentifier(int newIdentifier) { this->identifier = newIdentifier; }
-	void Vertex::setColor(std::string newColor) { this->color = newColor; }
-	void Vertex::setPredecessor(int newPredecessor) { this->predecessor = newPredecessor; }
+	void Vertex::setColor(std::string color) { this->color = color; }
+	void Vertex::setDistance(int d) { this->distance = d; }
+	void Vertex::setPredecessor(Vertex* p) { this->predecessor = p; }
 
 	//accessors defined
-	int Vertex::getIdentifier() { return this->identifier; }
+	int Vertex::getId() { return this->id; }
 	std::string Vertex::getColor() { return this->color; }
-	int Vertex::getPredecessor() { return this->predecessor; }
+	int Vertex::getDistance() { return this->distance; }
+	Vertex* Vertex::getPredecessor() { return this->predecessor; }
 
 }
