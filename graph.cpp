@@ -2,6 +2,9 @@
 #include "vertex.h"
 #include "edge.h"
 
+#include <queue>
+#include <iostream>
+
 namespace NS_BFS_ALGO {
 
 	//destructor
