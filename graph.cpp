@@ -121,6 +121,8 @@ namespace NS_BFS_ALGO {
 		}
 	}
 
-	
+	void printTree(const Graph& graph) {
+		//TODO: print entire tree structure
+	}
 
 }

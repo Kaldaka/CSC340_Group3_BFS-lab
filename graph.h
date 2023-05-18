@@ -31,6 +31,8 @@ namespace NS_BFS_ALGO {
 		//print path on tree structure
 		void printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex);
 
+		//prints entire tree structure
+		void printTree(const Graph& graph);
 
 	};
 }
