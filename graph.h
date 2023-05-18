@@ -2,33 +2,35 @@
 #define graph_h
 
 #include <iostream>
-#include <list>
+#include <vector>
+#include <Vertex.h>
+#include <LinkedList.h>
 
 namespace NS_BFS_ALGO {
 
 	class Graph {
 
-		private:
+	private:
+		std::vector<LinkedList<Vertex> adj;
+		int treeSize = 0;
 
-			std::list<std::pair<Vertex, Edge>>* graph = nullptr;
-			int treeSize = 0;
+	public:
 
-		public:
+		//big 3: deconstructor, constructor, copy constructor
+		~Graph();
+		Graph();
+		Graph(const Graph& copy);
 
-			//big 3: deconstructor, constructor, copy constructor
-			~Graph();
-			Graph();
-			Graph(const Graph& copy);
+		//mutators
+		void addVertex(Vertex vertex);
+		void addEdge(Edge edge);
 
-			//mutators
-			void addVertex(Vertex vertex);
-			void addEdge(Edge edge);
+		//main BFS method
+		void BFS(Vertex sourceVertex);
 
-			//main BFS method
-			void BFS(Graph graph, Vertex sourceVertex);
+		//print path on tree structure
+		void printPath(Graph graph, Vertex sourceVertex, Vertex destinationVertex);
 
-			//print path on tree structure
-			void printPath(Graph graph, Vertex sourceVertex, Vertex destinationVertex);
 
 	};
 }

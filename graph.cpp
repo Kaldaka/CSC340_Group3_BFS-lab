@@ -1,12 +1,10 @@
-#include "graph.h"
-#include "vertex.h"
-#include "edge.h"
-
+#include "Graph.h"
+#include "Vertex.h"
+#include "LinkedList.h"
 #include <queue>
 #include <iostream>
 
 namespace NS_BFS_ALGO {
-
 	//destructor
 	Graph::~Graph() { 
 		//might not be correct with list of lists
@@ -50,33 +48,47 @@ namespace NS_BFS_ALGO {
 		//add edge between two vertices
 	}
 
-	void Graph::BFS(int s) {
+	void Graph::BFS(Vertex *s) {
 		for (Vertex* u : vertices) {
-		u->setColor("WHITE");
-		u->setDistance(INT_MAX);
-		u->setPredecessor(nullptr);
-	    	}
-	    	vertices[s]->setColor("GRAY");
-	    	vertices[s]->setDistance(0);
-	    	std::queue<Vertex*> Q;
-	    	Q.push(vertices[s]);
-	    	while (!Q.empty()) {
+			u->setColor("WHITE");
+			u->setDistance(INT_MAX);
+			u->setPredecessor(nullptr);
+	    }
+		s->setColor("GRAY");
+		s->setDistance(0);
+		s->setPredecessor(nullptr);
+		std::queue<Vertex*> Q;
+		Q.push(s);
+		while (!Q.empty()) {
 			Vertex* u = Q.front();
 			Q.pop();
-			for (Vertex* v : adj[u->getId()]) {
-		    		if (v->getColor() == "WHITE") {
+			Iterator<Vertex> it (adj[u->getid()]->begin());
+			while (it.hasNext) {
+				it++;
+				if (v->getColor() == "WHITE") {
 					v->setColor("GRAY");
 					v->setDistance(u->getDistance() + 1);
 					v->setPredecessor(u);
 					Q.push(v);
-		    		}
+				}
 			}
 			u->setColor("BLACK");
-	    	}
+	    }
 	}
 
-	void Graph::printPath(Graph graph, Vertex sourceVertex, Vertex destinationVertex){
-		//implement recursive algorithm from class slides
+	void Graph::printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex){
+		if (destinationVertex == sourceVertex){
+			std::cout<<sourceVertex.get(id);
+		}
+		else if (destinationVertex.getPredecessor()==nullptr){
+			std::cout<<"No path from "<<sourceVertex.getId()<< " to "<< destinationVertex.getId()<<std::endl;
+		}
+		else{
+			printPath(graph, sourceVertex, destinationVertex->getPredecessor())
+			std::cout<< " -> " << destinationVertex.get(id);
+		}
 	}
+
+	
 
 }
