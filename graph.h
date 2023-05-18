@@ -2,16 +2,16 @@
 #define graph_h
 
 #include <iostream>
-#include <vector>
-#include <Vertex.h>
-#include <LinkedList.h>
+#include <list>
+#include "Vertex.h"
+#include "LinkedList.h"
 
 namespace NS_BFS_ALGO {
 
 	class Graph {
 
 	private:
-		std::vector<LinkedList<Vertex> adj;
+		std::list<LinkedList<Vertex>> *graph; 
 		int treeSize = 0;
 
 	public:
@@ -23,13 +23,13 @@ namespace NS_BFS_ALGO {
 
 		//mutators
 		void addVertex(Vertex vertex);
-		void addEdge(Edge edge);
+		bool addAdjacentVertex(int id, Vertex adjecentVertex);
 
 		//main BFS method
-		void BFS(Vertex sourceVertex);
+		void BFS(Vertex *sourceVertex);
 
 		//print path on tree structure
-		void printPath(Graph graph, Vertex sourceVertex, Vertex destinationVertex);
+		void printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex);
 
 
 	};

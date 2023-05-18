@@ -27,7 +27,7 @@ namespace NS_BFS_ALGO {
 		void setId(int id);
 
 		// Getters
-		int getId();
+		int getId() const;
 		std::string getColor() const;
 		Vertex* getPredecessor() const;
 		int getDistance() const;

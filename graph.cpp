@@ -3,24 +3,26 @@
 #include "LinkedList.h"
 #include <queue>
 #include <iostream>
+#include <climits>
+#include <list>
+
 
 namespace NS_BFS_ALGO {
 	//destructor
 	Graph::~Graph() { 
 		//might not be correct with list of lists
-		delete[] graph;
-		graph = nullptr;
+		graph->clear(); // Clear the list of adjacency lists
+		delete graph;
 	}
 
 	//default constructor
 	Graph::Graph() : treeSize(0) {
 		try {
-			this->graph = new std::list<std::pair<Vertex,Edge>>[this->treeSize];
+			this->graph = new std::list<LinkedList<Vertex>>();
 		}
 		catch (std::bad_alloc e) {
-			std::cout << e.what() << " encountered. Cannot initialize array.\n";
+			std::cout << e.what() << "Encountered. Cannot initialize array.\n";
 		}
-		graph->push_back({ Vertex(), Edge()});//TODO: fix
 	}
 
 	//copy constructor
@@ -32,28 +34,51 @@ namespace NS_BFS_ALGO {
 		catch (std::bad_alloc e) {
 			std::cout << e.what() << " encountered. Cannot initialize array.\n";
 		}
-		for (auto it = this->graph->begin(); it != this->graph->end(); it++){
-			for (auto inner_it = it->begin(); inner_it != it->end(); inner_it++) {//TODO: fix
-				//copy over inside list
-			}
-			//copy over outer list
-		}
+        std::list<LinkedList<Vertex>>::iterator it;
+        for (it = copy.graph->begin(); it != copy.graph->end(); ++it) {
+            LinkedList<Vertex> newList;
+            Iterator<Vertex> it2 (it->begin());
+            while (it2.hasNext()) {
+                Vertex vertex = *it2;
+                newList.add(vertex);
+                ++it2;
+            }
+            
+            graph->push_back(newList);
+        }
+
 	}
 
 	void Graph::addVertex(Vertex vertex) {
-		//add vertex to graph structure
+		LinkedList<Vertex> newLinkedList;
+		newLinkedList.add(vertex);
+		graph->push_back(newLinkedList);
+		treeSize++;
 	}
 
-	void Graph::addEdge(Edge edge) {
-		//add edge between two vertices
+	
+	bool Graph::addAdjacentVertex(int id, Vertex adjecentVertex) {
+		std::list<LinkedList<Vertex>>::iterator it;
+		for (it = graph->begin(); it != graph->end(); ++it) {
+			Vertex currentVertex(it->getFirstValue());
+			if (currentVertex.getId()==id){
+				it->add(adjecentVertex);
+				return true;
+			}
+		}
+		return false;
 	}
+
+
 
 	void Graph::BFS(Vertex *s) {
-		for (Vertex* u : vertices) {
-			u->setColor("WHITE");
-			u->setDistance(INT_MAX);
-			u->setPredecessor(nullptr);
-	    }
+        std::list<LinkedList<Vertex>>::iterator it;
+		for (it = graph->begin(); it != graph->end(); ++it) {
+            Iterator<Vertex> it2 = it->begin();
+			(*it2).setColor("WHITE");
+			(*it2).setDistance(INT_MAX);
+			(*it2).setPredecessor(nullptr);
+		}
 		s->setColor("GRAY");
 		s->setDistance(0);
 		s->setPredecessor(nullptr);
@@ -62,30 +87,37 @@ namespace NS_BFS_ALGO {
 		while (!Q.empty()) {
 			Vertex* u = Q.front();
 			Q.pop();
-			Iterator<Vertex> it (adj[u->getid()]->begin());
-			while (it.hasNext) {
-				it++;
-				if (v->getColor() == "WHITE") {
-					v->setColor("GRAY");
-					v->setDistance(u->getDistance() + 1);
-					v->setPredecessor(u);
-					Q.push(v);
-				}
-			}
-			u->setColor("BLACK");
+            std::list<LinkedList<Vertex>>::iterator it;
+		    for (it = graph->begin(); it != graph->end(); ++it) {
+                if(it->getFirstValue().getId()==u->getId()){
+                    Iterator<Vertex> it2 (it->begin());
+                    while (it2.hasNext()) {
+                        if ((*it2).getColor() == "WHITE") {
+                            (*it2).setColor("GRAY");
+                            (*it2).setDistance((*it2).getDistance() + 1);
+                            (*it2).setPredecessor(u);
+                            Vertex* v = &(*it2);
+                            Q.push(v);
+                        }
+                        ++it2;
+                    }
+                    u->setColor("BLACK");
+                }
+            }
 	    }
 	}
 
+    //TODO: modify params to poniters instead
 	void Graph::printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex){
 		if (destinationVertex == sourceVertex){
-			std::cout<<sourceVertex.get(id);
+			std::cout<<sourceVertex.getId();
 		}
 		else if (destinationVertex.getPredecessor()==nullptr){
 			std::cout<<"No path from "<<sourceVertex.getId()<< " to "<< destinationVertex.getId()<<std::endl;
 		}
 		else{
-			printPath(graph, sourceVertex, destinationVertex->getPredecessor())
-			std::cout<< " -> " << destinationVertex.get(id);
+			printPath(graph, sourceVertex, *(destinationVertex.getPredecessor()));
+			std::cout<< " -> " << destinationVertex.getId();
 		}
 	}
 

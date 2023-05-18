@@ -3,7 +3,16 @@
 
 namespace NS_BFS_ALGO {
 
-    template <typename T>
+    template <class T>
+    class LinkedList;
+
+    template <class T>
+    class Node;
+
+    template <class T>
+    class Iterator;
+
+    template <class T>
     class Node{
     private:
         T value;
@@ -11,10 +20,11 @@ namespace NS_BFS_ALGO {
     public: 
         Node(T value,  Node<T>* next);
         Node(T value);
-        friend class LinkedList;
+        friend class LinkedList<T>;
+        friend class Iterator<T>; 
     };
 
-     template <typename T>
+    template <class T>
     class Iterator {
     private:
         Node<T>* current;
@@ -31,12 +41,16 @@ namespace NS_BFS_ALGO {
 
     };
 
-    template <typename T>
+    template <class T>
     class LinkedList {
     private:
         Node<T>* head;
         Node<T>* tail;
+        int size;
     public:
+        LinkedList();
+        ~LinkedList();
+        T getFirstValue();
         void add(T value);
         Iterator<T> begin();
         friend class Iterator<T>; 
@@ -87,6 +101,7 @@ namespace NS_BFS_ALGO {
             tail->next = newNode;
             tail = newNode;
         }
+        size++;
     }
 
     template <typename T>
@@ -94,7 +109,31 @@ namespace NS_BFS_ALGO {
         Iterator<T> it(head);
         return it;
     }
-   
+
+    template <typename T>
+    inline LinkedList<T>::LinkedList() : head(nullptr), size(0), tail(nullptr) {}
+
+
+    template <typename T>
+    inline LinkedList<T>::~LinkedList() {
+        // Traverse the list and deallocate each node
+        Node<T>* current = head;
+        while (current != nullptr) {
+            Node<T>* next = current->next;
+            delete current;
+            current = next;
+        }
+
+        // Set head to nullptr to indicate an empty list
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    template <typename T>
+    inline T LinkedList<T>::getFirstValue() {
+        return head->value;
+    }
+
 }
 
 #endif

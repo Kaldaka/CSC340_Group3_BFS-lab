@@ -1,6 +1,6 @@
-#include "graph.h"
-#include "vertex.h"
-#include "edge.h"
+#include "Graph.h"
+#include "Vertex.h"
+#include "climits"
 
 namespace NS_BFS_ALGO {
 
@@ -8,7 +8,8 @@ namespace NS_BFS_ALGO {
 	Vertex::Vertex() : id(0), color("WHITE"), distance(INT_MAX), predecessor(nullptr) {}
 	Vertex::Vertex(int id) : id(id), color("WHITE"), distance(INT_MAX), predecessor(nullptr) {}
 	
-	Vertex::Vertex(std::string color, Vertex* predecessor, int distance) {
+	Vertex::Vertex(int id, std::string color, int distance, Vertex* predecessore) {
+		this->id = id;
 		this->color = color;
 		this->predecessor = predecessor;
 		this->distance = distance;
@@ -34,17 +35,17 @@ namespace NS_BFS_ALGO {
 	void Vertex::setId(int id){this->id = id;}
 
 	//accessors defined
-	int Vertex::getId() { return this->id; }
-	std::string Vertex::getColor() { return this->color; }
-	int Vertex::getDistance() { return this->distance; }
-	Vertex* Vertex::getPredecessor() { return this->predecessor; }
+	int Vertex::getId() const { return this->id; }
+	std::string Vertex::getColor() const { return this->color; }
+	int Vertex::getDistance() const{ return this->distance; }
+	Vertex* Vertex::getPredecessor() const{ return this->predecessor; }
 
 
 	//overload == operator
 	bool Vertex::operator==(const Vertex& other) const {
 		return (this->id == other.id &&
 				this->color == other.color &&
-				this->*predecessor == other->*predecessor &&
+				*(this->predecessor) == *(other.predecessor) &&
 				this->distance == other.distance);
 	}
 
