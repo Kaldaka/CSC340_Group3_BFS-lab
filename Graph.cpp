@@ -58,7 +58,7 @@ namespace NS_BFS_ALGO {
 
 	// Add an adjacent vertex to a specific vertex
 	bool Graph::addAdjacentVertex(int id, int adjId) {
-        Vertex *adj;
+        Vertex *adj = nullptr;
         for (auto it = graph->begin(); it != graph->end(); ++it) {
 			Iterator<Vertex> it2 = (*it)->begin();
             if ((*it2)->getId()==adjId){
@@ -135,8 +135,8 @@ namespace NS_BFS_ALGO {
 
     //print path on tree structure
 	void Graph::printPath(int sourceId, int destinationId){
-        Vertex* sourceVertex;
-        Vertex* destinationVertex;
+        Vertex* sourceVertex = nullptr;
+        Vertex* destinationVertex = nullptr;
         for (auto it = graph->begin(); it != graph->end(); ++it) {
             Iterator<Vertex> it2 = (*it)->begin();
             if ((*it2)->getId()==sourceId){
