@@ -1,0 +1,33 @@
+//pseudo code for printPath(sourceVertex,destinationVertex),printPath(sourceId,destinationId), and printTree()
+
+
+function Graph.printPath(sourceVertex, destinationVertex):
+    if destinationVertex is equal to sourceVertex:
+        print sourceVertex.getId()
+    else if destinationVertex.getPredecessor() is equal to nullptr:
+        print "No path from " + sourceVertex.getId() + " to " + destinationVertex.getId()
+    else:
+        printPath(sourceVertex, destinationVertex.getPredecessor())
+        print " -> " + destinationVertex.getId()
+
+function Graph.printPath(sourceId, destinationId):
+    sourceVertex = null
+    destinationVertex = null
+    for each vertex in graph:
+        it2 = vertex.begin()  // Iterator to iterate through the adjacent vertices
+        if it2.getId() is equal to sourceId:
+            sourceVertex = it2
+        if it2.getId() is equal to destinationId:
+            destinationVertex = it2
+    printPath(sourceVertex, destinationVertex)
+
+function Graph.printTree():
+    for each vertex in graph:
+        it2 = vertex.begin()  // Iterator to iterate through the adjacent vertices
+        v = it2
+        while it2.hasNext():
+            it2 = it2.next()  // Move to the next adjacent vertex
+            currentVertex = it2
+            print v.getId() + ":" + v.getColor() + "->" + currentVertex.getId() + ":" + currentVertex.getColor()
+        print newline
+
