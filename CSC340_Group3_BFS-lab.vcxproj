@@ -129,12 +129,10 @@
   <ItemGroup>
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="bfs_algo_main.cpp" />
-    <ClCompile Include="edge.cpp" />
     <ClCompile Include="vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph.h" />
-    <ClInclude Include="edge.h" />
     <ClInclude Include="vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
