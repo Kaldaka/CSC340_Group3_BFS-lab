@@ -17,6 +17,7 @@ namespace NS_BFS_ALGO {
 
 	// Copy Constructor
 	Vertex::Vertex(const Vertex& other) {
+        this->id = other.id;
 		this->color = other.color;
 		this->predecessor = other.predecessor;
 		this->distance = other.distance;

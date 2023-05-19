@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "graph.h"
+#include "Graph.h"
 
 namespace NS_BFS_ALGO {
 	class Vertex {

@@ -15,11 +15,12 @@ namespace NS_BFS_ALGO {
     template <class T>
     class Node{
     private:
-        T value;
+        T* value;
         Node<T>* next;
     public: 
-        Node(T value,  Node<T>* next);
-        Node(T value);
+        Node(T* value,  Node<T>* next);
+        Node(T* value);
+        ~Node();
         friend class LinkedList<T>;
         friend class Iterator<T>; 
     };
@@ -33,8 +34,8 @@ namespace NS_BFS_ALGO {
         Iterator(Node<T>* node);
         Iterator(const Iterator &other);
 
-        T& operator*() const;
-
+        T* operator*() const;
+        T* operator->() const; 
         Iterator& operator++();
 
         bool hasNext();
@@ -49,15 +50,14 @@ namespace NS_BFS_ALGO {
         int size;
     public:
         LinkedList();
+        LinkedList(const LinkedList<T>& copy);
         ~LinkedList();
-        T getFirstValue();
-        void add(T value);
+        T* getFirstValue();
+        int getSize();
+        void add(T* value);
         Iterator<T> begin();
         friend class Iterator<T>; 
     };
-
-
-    
 
     template <typename T>
     inline Iterator<T>::Iterator() : current(nullptr) {}
@@ -69,7 +69,12 @@ namespace NS_BFS_ALGO {
     inline Iterator<T>::Iterator(const Iterator &other) : current(other.current) {}
 
     template <typename T>
-    inline T& Iterator<T>::operator*() const {
+    inline T* Iterator<T>::operator*() const {
+        return current->value;
+    }
+
+    template <typename T>
+    inline T* Iterator<T>::operator->() const {
         return current->value;
     }
 
@@ -83,16 +88,22 @@ namespace NS_BFS_ALGO {
     inline bool Iterator<T>::hasNext() {
         return current->next != nullptr;
     }
-  
 
     template <typename T>
-    inline Node<T>::Node(T value, Node<T>* next) : value(value), next(next) {}
+    inline Node<T>::Node(T* value, Node<T>* next) : value(value), next(next) {}
 
     template <typename T>
-    inline Node<T>::Node(T value) : value(value), next(nullptr) {}
+    inline Node<T>::Node(T* value) : value(value), next(nullptr) {}
 
     template <typename T>
-    inline void LinkedList<T>::add(T value) {
+    inline Node<T>::~Node() {
+        delete value;
+        delete next;
+    }
+    
+
+    template <typename T>
+    inline void LinkedList<T>::add(T* value) {
         Node<T>* newNode = new Node<T>(value);
         if (head == nullptr) {
             head = newNode;
@@ -113,7 +124,6 @@ namespace NS_BFS_ALGO {
     template <typename T>
     inline LinkedList<T>::LinkedList() : head(nullptr), size(0), tail(nullptr) {}
 
-
     template <typename T>
     inline LinkedList<T>::~LinkedList() {
         // Traverse the list and deallocate each node
@@ -130,8 +140,24 @@ namespace NS_BFS_ALGO {
     }
 
     template <typename T>
-    inline T LinkedList<T>::getFirstValue() {
+    inline T* LinkedList<T>::getFirstValue() {
         return head->value;
+    }
+
+    template <typename T>
+    inline int LinkedList<T>::getSize() {
+        return size;
+    }
+
+
+    template <typename T>
+    LinkedList<T>::LinkedList(const LinkedList<T>& copy) : head(nullptr), tail(nullptr), size(0) {
+        // Iterate over the copy list and add each element to the new list
+        Node<T>* currentNode = copy.head;
+        while (currentNode != nullptr) {
+            add(currentNode->value);
+            currentNode = currentNode->next;
+        }
     }
 
 }

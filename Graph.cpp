@@ -6,63 +6,70 @@
 #include <climits>
 #include <list>
 
-
 namespace NS_BFS_ALGO {
-	//destructor
-	Graph::~Graph() { 
-		//might not be correct with list of lists
-		graph->clear(); // Clear the list of adjacency lists
+    using namespace std;
+	// Destructor
+	Graph::~Graph() {
+		// Clear the list of adjacency lists
+		for (auto it = graph->begin(); it != graph->end(); ++it) {
+			delete *it;
+		}
 		delete graph;
 	}
 
-	//default constructor
+	// Default constructor
 	Graph::Graph() : treeSize(0) {
 		try {
-			this->graph = new std::list<LinkedList<Vertex>>();
+			this->graph = new std::list<LinkedList<Vertex>*>();
 		}
-		catch (std::bad_alloc e) {
-			std::cout << e.what() << "Encountered. Cannot initialize array.\n";
+		catch (std::bad_alloc& e) {
+			std::cout << e.what() << " Encountered. Cannot initialize array.\n";
 		}
 	}
 
-	//copy constructor
+	// Copy constructor
 	Graph::Graph(const Graph& copy) : treeSize(copy.treeSize) {
 		try {
-			delete this->graph;
-			this->graph = copy.graph;
+			this->graph = new std::list<LinkedList<Vertex>*>();
 		}
-		catch (std::bad_alloc e) {
+		catch (std::bad_alloc& e) {
 			std::cout << e.what() << " encountered. Cannot initialize array.\n";
 		}
-        std::list<LinkedList<Vertex>>::iterator it;
-        for (it = copy.graph->begin(); it != copy.graph->end(); ++it) {
-            LinkedList<Vertex> newList;
-            Iterator<Vertex> it2 (it->begin());
-            while (it2.hasNext()) {
-                Vertex vertex = *it2;
-                newList.add(vertex);
+		for (auto it = copy.graph->begin(); it != copy.graph->end(); ++it) {
+			LinkedList<Vertex>* newList = new LinkedList<Vertex>();
+			Iterator<Vertex> it2 ((*it)->begin());
+			while (it2.hasNext()) {
+				Vertex* vertex = *it2;
+				newList->add(vertex);
                 ++it2;
-            }
-            
-            graph->push_back(newList);
-        }
-
+			}
+			graph->push_back(newList);
+		}
 	}
 
+	// Add a vertex to the graph
 	void Graph::addVertex(Vertex vertex) {
-		LinkedList<Vertex> newLinkedList;
-		newLinkedList.add(vertex);
+		LinkedList<Vertex>* newLinkedList = new LinkedList<Vertex>();
+        Vertex* v = new Vertex(vertex);
+		newLinkedList->add(v);
 		graph->push_back(newLinkedList);
 		treeSize++;
 	}
 
-	
-	bool Graph::addAdjacentVertex(int id, Vertex adjecentVertex) {
-		std::list<LinkedList<Vertex>>::iterator it;
-		for (it = graph->begin(); it != graph->end(); ++it) {
-			Vertex currentVertex(it->getFirstValue());
-			if (currentVertex.getId()==id){
-				it->add(adjecentVertex);
+	// Add an adjacent vertex to a specific vertex
+	bool Graph::addAdjacentVertex(int id, int adjId) {
+        Vertex *adj;
+        for (auto it = graph->begin(); it != graph->end(); ++it) {
+			Iterator<Vertex> it2 = (*it)->begin();
+            if ((*it2)->getId()==adjId){
+                adj = *it2;
+                break;
+            }
+		}
+		for (auto it = graph->begin(); it != graph->end(); ++it) {
+			Iterator<Vertex> it2 = (*it)->begin();
+			if (it2->getId() == id) {
+				(*it)->add(adj);
 				return true;
 			}
 		}
@@ -70,59 +77,88 @@ namespace NS_BFS_ALGO {
 	}
 
 
+   void Graph::BFS(int sourceID) {
+        std::queue<Vertex*> Q;
+        for (auto it = graph->begin(); it != graph->end(); ++it) {
+            Iterator<Vertex> it2 = (*it)->begin();
+            if ((*it2)->getId()==sourceID){
+                (*it2)->setColor("GRAY");
+                (*it2)->setDistance(0);
+                (*it2)->setPredecessor(nullptr);
+                Q.push(*it2);
+            }
+            else{
+                Vertex* vertex = *it2;
+                vertex->setColor("WHITE");
+                vertex->setDistance(INT_MAX);
+                vertex->setPredecessor(nullptr);
+            }
+        }
 
-	void Graph::BFS(Vertex *s) {
-        std::list<LinkedList<Vertex>>::iterator it;
-		for (it = graph->begin(); it != graph->end(); ++it) {
-            Iterator<Vertex> it2 = it->begin();
-			(*it2).setColor("WHITE");
-			(*it2).setDistance(INT_MAX);
-			(*it2).setPredecessor(nullptr);
-		}
-		s->setColor("GRAY");
-		s->setDistance(0);
-		s->setPredecessor(nullptr);
-		std::queue<Vertex*> Q;
-		Q.push(s);
-		while (!Q.empty()) {
-			Vertex* u = Q.front();
-			Q.pop();
-            std::list<LinkedList<Vertex>>::iterator it;
-		    for (it = graph->begin(); it != graph->end(); ++it) {
-                if(it->getFirstValue().getId()==u->getId()){
-                    Iterator<Vertex> it2 (it->begin());
-                    while (it2.hasNext()) {
-                        if ((*it2).getColor() == "WHITE") {
-                            (*it2).setColor("GRAY");
-                            (*it2).setDistance((*it2).getDistance() + 1);
-                            (*it2).setPredecessor(u);
-                            Vertex* v = &(*it2);
-                            Q.push(v);
+        while (!Q.empty()) {
+            Vertex* u = Q.front();
+            Q.pop();
+
+            for (auto it = graph->begin(); it != graph->end(); ++it) {
+                Iterator<Vertex> it2 = (*it)->begin();
+                if ((*it2)->getId() ==u->getId()) {
+                    Iterator<Vertex> prev = it2;
+                    while (prev.hasNext()) {
+                        Vertex* vertex = *it2;
+                        if (vertex->getColor() == "WHITE") {
+                            vertex->setColor("GRAY");
+                            vertex->setDistance(vertex->getDistance() + 1);
+                            vertex->setPredecessor(u);
+                            Q.push(vertex);
                         }
+                        prev = it2;
                         ++it2;
                     }
-                    u->setColor("BLACK");
                 }
             }
-	    }
-	}
+            u->setColor("BLACK");
+        }
+    }
 
-    //TODO: modify params to poniters instead
-	void Graph::printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex){
-		if (destinationVertex == sourceVertex){
-			std::cout<<sourceVertex.getId();
-		}
-		else if (destinationVertex.getPredecessor()==nullptr){
-			std::cout<<"No path from "<<sourceVertex.getId()<< " to "<< destinationVertex.getId()<<std::endl;
-		}
-		else{
-			printPath(graph, sourceVertex, *(destinationVertex.getPredecessor()));
-			std::cout<< " -> " << destinationVertex.getId();
-		}
-	}
+    void Graph::printPath(Vertex* sourceVertex, Vertex* destinationVertex) {
+        if (destinationVertex == sourceVertex) {
+            std::cout << sourceVertex->getId();
+        }
+        else if (destinationVertex->getPredecessor() == nullptr) {
+            std::cout << "No path from " << sourceVertex->getId() << " to " << destinationVertex->getId() << std::endl;
+        }
+        else {
+            printPath(sourceVertex, destinationVertex->getPredecessor());
+            std::cout << " -> " << destinationVertex->getId();
+        }
+    }
 
-	void printTree(const Graph& graph) {
-		//TODO: print entire tree structure
-	}
+    //print path on tree structure
+	void Graph::printPath(int sourceId, int destinationId){
+        Vertex* sourceVertex;
+        Vertex* destinationVertex;
+        for (auto it = graph->begin(); it != graph->end(); ++it) {
+            Iterator<Vertex> it2 = (*it)->begin();
+            if ((*it2)->getId()==sourceId){
+                sourceVertex=*it2;
+            }
+            if ((*it2)->getId()==destinationId){
+                destinationVertex=*it2;
+            }
+        }
+        printPath(sourceVertex, destinationVertex);
+    }
 
+    void Graph::printTree() {
+        for (auto it = graph->begin(); it != graph->end(); ++it) {
+            Iterator<Vertex> it2 = (*it)->begin();
+            Vertex* v = *it2;
+           while (it2.hasNext()) {
+                ++it2;
+                Vertex* currentVertex = *it2;
+                std::cout << v->getId() << ":" << v->getColor() << "->" << currentVertex->getId() << ":" << currentVertex->getColor() << std::endl;
+            }
+            std::cout << std::endl;
+        }
+    }
 }

@@ -11,9 +11,11 @@ namespace NS_BFS_ALGO {
 	class Graph {
 
 	private:
-		std::list<LinkedList<Vertex>> *graph; 
+		std::list<LinkedList<Vertex>*> *graph; 
 		int treeSize = 0;
 
+        //print path on tree structure
+		void printPath(Vertex* sourceVertex, Vertex* destinationVertex);
 	public:
 
 		//big 3: deconstructor, constructor, copy constructor
@@ -23,16 +25,16 @@ namespace NS_BFS_ALGO {
 
 		//mutators
 		void addVertex(Vertex vertex);
-		bool addAdjacentVertex(int id, Vertex adjecentVertex);
+		bool addAdjacentVertex(int id, int adjId);
 
 		//main BFS method
-		void BFS(Vertex *sourceVertex);
+		void BFS(int sourceID);
 
-		//print path on tree structure
-		void printPath(const Graph &graph, const Vertex &sourceVertex, const Vertex &destinationVertex);
+        //print path on tree structure
+		void printPath(int sourceId, int destinationId);
 
 		//prints entire tree structure
-		void printTree(const Graph& graph);
+		void printTree();
 
 	};
 }
